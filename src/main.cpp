@@ -1,12 +1,12 @@
 #include <iostream>
 #include "LiteralNode.h"
-#include "ConcatNode.h"
+#include "UnionNode.h"
 
 int main() {
     LiteralNode* a = new LiteralNode('a');
     LiteralNode* b = new LiteralNode('b');
 
-    ConcatNode node(a, b);
+    UnionNode node(a, b);
 
     std::cout << node.evaluate() << std::endl;
 
