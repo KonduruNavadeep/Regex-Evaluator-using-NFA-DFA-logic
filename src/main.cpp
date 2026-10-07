@@ -1,12 +1,25 @@
 #include <iostream>
-#include "RegexParser.h"
+#include "NFAState.h"
+#include "NFAFragment.h"
 
 int main() {
-    RegexParser parser("(a|b)*");
+    NFAState* start = new NFAState(0);
+    NFAState* end = new NFAState(1, true);
 
-    RegexNode* root = parser.parse();
+    start->addTransition('a', end);
 
-    std::cout << root->evaluate() << std::endl;
+    NFAFragment fragment(start, end);
+
+    std::cout << "Start: " << fragment.start->id << std::endl;
+    std::cout << "End: " << fragment.end->id << std::endl;
+    std::cout << "Transition: "
+              << fragment.start->transitions[0].first
+              << " -> "
+              << fragment.start->transitions[0].second->id
+              << std::endl;
+
+    delete start;
+    delete end;
 
     return 0;
 }
