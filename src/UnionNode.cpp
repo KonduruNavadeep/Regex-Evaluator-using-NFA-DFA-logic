@@ -8,3 +8,11 @@ UnionNode::UnionNode(RegexNode* left, RegexNode* right) {
 std::string UnionNode::evaluate() {
     return left->evaluate() + "|" + right->evaluate();
 }
+
+RegexNode* UnionNode::getLeft() {
+    return left;
+}
+
+RegexNode* UnionNode::getRight() {
+    return right;
+}

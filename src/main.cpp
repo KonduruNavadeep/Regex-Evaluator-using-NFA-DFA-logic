@@ -1,39 +1,46 @@
 #include <iostream>
 #include "LiteralNode.h"
-#include "ConcatNode.h"
+#include "UnionNode.h"
 #include "NFABuilder.h"
+
+void printTransition(NFAState* state) {
+    for (auto transition : state->transitions) {
+        if (transition.first == '\0')
+            std::cout << state->id << " --EPSILON--> "
+                      << transition.second->id << std::endl;
+        else
+            std::cout << state->id << " --"
+                      << transition.first << "--> "
+                      << transition.second->id << std::endl;
+    }
+}
 
 int main() {
     LiteralNode a('a');
     LiteralNode b('b');
 
-    ConcatNode concat(&a, &b);
+    UnionNode unionNode(&a, &b);
 
     NFABuilder builder;
 
-    NFAFragment fragment = builder.build(&concat);
+    NFAFragment fragment = builder.build(&unionNode);
 
-    NFAState* first = fragment.start;
-    NFAState* afterA = first->transitions[0].second;
-    NFAState* afterB = afterA->transitions[1].second;
-
-    std::cout << "Start: " << first->id << std::endl;
+    std::cout << "Start: " << fragment.start->id << std::endl;
     std::cout << "End: " << fragment.end->id << std::endl;
 
-    std::cout << "a: "
-              << first->transitions[0].first
-              << " -> "
-              << afterA->id << std::endl;
+    printTransition(fragment.start);
 
-    std::cout << "epsilon: "
-              << afterA->transitions[0].first
-              << " -> "
-              << afterA->transitions[0].second->id << std::endl;
+    NFAState* leftStart =
+        fragment.start->transitions[0].second;
 
-    std::cout << "b: "
-              << afterA->transitions[0].second->transitions[0].first
-              << " -> "
-              << fragment.end->id << std::endl;
+    NFAState* rightStart =
+        fragment.start->transitions[1].second;
+
+    printTransition(leftStart);
+    printTransition(leftStart->transitions[0].second);
+
+    printTransition(rightStart);
+    printTransition(rightStart->transitions[0].second);
 
     return 0;
 }
