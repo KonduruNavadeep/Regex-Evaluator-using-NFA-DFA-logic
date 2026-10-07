@@ -1,54 +1,23 @@
 #include <iostream>
-#include <set>
-#include "LiteralNode.h"
-#include "StarNode.h"
+#include "RegexParser.h"
 #include "NFABuilder.h"
-
-void printNFA(NFAState* start) {
-    std::set<int> visited;
-    std::vector<NFAState*> states;
-
-    states.push_back(start);
-
-    for (int i = 0; i < states.size(); i++) {
-        NFAState* current = states[i];
-
-        if (visited.count(current->id))
-            continue;
-
-        visited.insert(current->id);
-
-        for (auto transition : current->transitions) {
-            NFAState* destination = transition.second;
-
-            if (!visited.count(destination->id))
-                states.push_back(destination);
-        }
-    }
-
-    for (NFAState* state : states) {
-        for (auto transition : state->transitions) {
-            if (transition.first == '\0')
-                std::cout << state->id << " --EPSILON--> "
-                          << transition.second->id << std::endl;
-            else
-                std::cout << state->id << " --" << transition.first << "--> "
-                          << transition.second->id << std::endl;
-        }
-    }
-}
+#include "NFASimulator.h"
 
 int main() {
-    LiteralNode a('a');
-    StarNode star(&a);
+    RegexParser parser("(a|b)*abb");
+    RegexNode* root = parser.parse();
 
     NFABuilder builder;
-    NFAFragment fragment = builder.build(&star);
+    NFAFragment fragment = builder.build(root);
 
-    std::cout << "Start: " << fragment.start->id << std::endl;
-    std::cout << "End: " << fragment.end->id << std::endl;
+    NFASimulator simulator;
 
-    printNFA(fragment.start);
+    std::cout << "abb: " << simulator.matches(fragment, "abb") << std::endl;
+    std::cout << "aabb: " << simulator.matches(fragment, "aabb") << std::endl;
+    std::cout << "ababb: " << simulator.matches(fragment, "ababb") << std::endl;
+    std::cout << "abababb: " << simulator.matches(fragment, "abababb") << std::endl;
+    std::cout << "ab: " << simulator.matches(fragment, "ab") << std::endl;
+    std::cout << "abc: " << simulator.matches(fragment, "abc") << std::endl;
 
     return 0;
 }
