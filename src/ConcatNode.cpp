@@ -8,3 +8,11 @@ ConcatNode::ConcatNode(RegexNode* left, RegexNode* right) {
 std::string ConcatNode::evaluate() {
     return left->evaluate() + right->evaluate();
 }
+
+RegexNode* ConcatNode::getLeft() {
+    return left;
+}
+
+RegexNode* ConcatNode::getRight() {
+    return right;
+}

@@ -1,25 +1,39 @@
 #include <iostream>
-#include "NFAState.h"
-#include "NFAFragment.h"
+#include "LiteralNode.h"
+#include "ConcatNode.h"
+#include "NFABuilder.h"
 
 int main() {
-    NFAState* start = new NFAState(0);
-    NFAState* end = new NFAState(1, true);
+    LiteralNode a('a');
+    LiteralNode b('b');
 
-    start->addTransition('a', end);
+    ConcatNode concat(&a, &b);
 
-    NFAFragment fragment(start, end);
+    NFABuilder builder;
 
-    std::cout << "Start: " << fragment.start->id << std::endl;
+    NFAFragment fragment = builder.build(&concat);
+
+    NFAState* first = fragment.start;
+    NFAState* afterA = first->transitions[0].second;
+    NFAState* afterB = afterA->transitions[1].second;
+
+    std::cout << "Start: " << first->id << std::endl;
     std::cout << "End: " << fragment.end->id << std::endl;
-    std::cout << "Transition: "
-              << fragment.start->transitions[0].first
-              << " -> "
-              << fragment.start->transitions[0].second->id
-              << std::endl;
 
-    delete start;
-    delete end;
+    std::cout << "a: "
+              << first->transitions[0].first
+              << " -> "
+              << afterA->id << std::endl;
+
+    std::cout << "epsilon: "
+              << afterA->transitions[0].first
+              << " -> "
+              << afterA->transitions[0].second->id << std::endl;
+
+    std::cout << "b: "
+              << afterA->transitions[0].second->transitions[0].first
+              << " -> "
+              << fragment.end->id << std::endl;
 
     return 0;
 }

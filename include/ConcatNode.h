@@ -12,6 +12,8 @@ public:
     ConcatNode(RegexNode* left, RegexNode* right);
 
     std::string evaluate() override;
+    RegexNode* getLeft();
+    RegexNode* getRight();
 };
 
 #endif
