@@ -17,6 +17,7 @@ private:
     NFAFragment buildLiteral(RegexNode* node);
     NFAFragment buildConcat(RegexNode* node);
     NFAFragment buildUnion(RegexNode* node);
+    NFAFragment buildStar(RegexNode* node);
 };
 
 #endif

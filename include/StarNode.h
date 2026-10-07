@@ -11,6 +11,8 @@ public:
     StarNode(RegexNode* child);
 
     std::string evaluate() override;
+
+    RegexNode* getChild();
 };
 
 #endif

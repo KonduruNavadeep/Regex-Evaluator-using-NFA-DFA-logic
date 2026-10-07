@@ -2,6 +2,7 @@
 #include "LiteralNode.h"
 #include "ConcatNode.h"
 #include "UnionNode.h"
+#include "StarNode.h"
 
 NFABuilder::NFABuilder() {
     stateCount = 0;
@@ -24,6 +25,12 @@ NFAFragment NFABuilder::build(RegexNode* node) {
 
     if (unionNode != nullptr) {
         return buildUnion(unionNode);
+    }
+
+    StarNode* star = dynamic_cast<StarNode*>(node);
+
+    if (star != nullptr) {
+        return buildStar(star);
     }
 
     return NFAFragment(nullptr, nullptr);
@@ -71,6 +78,24 @@ NFAFragment NFABuilder::buildUnion(RegexNode* node) {
 
     left.end->addTransition('\0', end);
     right.end->addTransition('\0', end);
+
+    return NFAFragment(start, end);
+}
+
+NFAFragment NFABuilder::buildStar(RegexNode* node) {
+    StarNode* star = dynamic_cast<StarNode*>(node);
+
+    NFAFragment child = build(star->getChild());
+
+    NFAState* start = new NFAState(stateCount++);
+    NFAState* end = new NFAState(stateCount++, true);
+
+    start->addTransition('\0', child.start);
+    start->addTransition('\0', end);
+
+    child.end->isFinal = false;
+    child.end->addTransition('\0', child.start);
+    child.end->addTransition('\0', end);
 
     return NFAFragment(start, end);
 }

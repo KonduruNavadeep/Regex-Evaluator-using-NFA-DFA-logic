@@ -7,3 +7,7 @@ StarNode::StarNode(RegexNode* child) {
 std::string StarNode::evaluate() {
     return "(" + child->evaluate() + ")*";
 }
+
+RegexNode* StarNode::getChild() {
+    return child;
+}
