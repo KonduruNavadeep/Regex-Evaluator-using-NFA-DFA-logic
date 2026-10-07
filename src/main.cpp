@@ -1,15 +1,12 @@
 #include <iostream>
-#include "LiteralNode.h"
-#include "StarNode.h"
+#include "RegexParser.h"
 
 int main() {
-    LiteralNode* a = new LiteralNode('a');
+    RegexParser parser("(a|b)*");
 
-    StarNode node(a);
+    RegexNode* root = parser.parse();
 
-    std::cout << node.evaluate() << std::endl;
-
-    delete a;
+    std::cout << root->evaluate() << std::endl;
 
     return 0;
 }
