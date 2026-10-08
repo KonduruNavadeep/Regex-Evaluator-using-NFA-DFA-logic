@@ -289,7 +289,9 @@ Result: REJECT
 
 ## Testing
 
-The evaluator was tested with:
+The evaluator was tested with the following regular expressions and input strings.
+
+**1. Literal matching**
 
 ```text
 Regex: a
@@ -303,17 +305,23 @@ Input: b
 Result: REJECT
 ```
 
+**2. Union operator**
+
 ```text
 Regex: a|b
 Input: b
 Result: ACCEPT
 ```
 
+**3. Kleene star**
+
 ```text
 Regex: a*
 Input: aaa
 Result: ACCEPT
 ```
+
+**4. Complex regular expressions**
 
 ```text
 Regex: (a|b)*abb
@@ -350,6 +358,37 @@ Regex: (a|b)*abb
 Input: abc
 Result: REJECT
 ```
+
+## Automated Testing
+
+The project includes a PowerShell script (`tests.ps1`) that automatically compiles the Regex Evaluator and runs 21 test cases covering valid expressions, invalid syntax, and edge cases.
+
+### Run the Tests
+
+Open PowerShell in the project root directory and execute:
+
+```powershell
+.\tests.ps1
+```
+
+If PowerShell blocks script execution, allow scripts for the current terminal session:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\tests.ps1
+```
+
+The test runner displays the result of each test and a final summary containing the total number of tests passed and failed.
+
+A successful run should report:
+
+```text
+Total:  21
+Passed: 21
+Failed: 0
+```
+
+The expected results above reflect the current test suite. Actual results may vary if the implementation or tests change.
 
 ## Technologies Used
 
