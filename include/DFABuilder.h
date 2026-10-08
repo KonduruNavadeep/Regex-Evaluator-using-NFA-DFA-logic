@@ -15,7 +15,14 @@ public:
     DFAState* build(NFAFragment& nfa);
 
 private:
-    bool containsFinalState(const std::set<NFAState*>& states);
+    bool containsFinalState(
+        const std::set<NFAState*>& states
+    );
+
+    DFAState* findState(
+        const std::vector<DFAState*>& states,
+        const std::set<NFAState*>& nfaStates
+    );
 };
 
 #endif
