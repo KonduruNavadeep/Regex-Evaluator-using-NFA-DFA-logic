@@ -10,13 +10,22 @@ int main() {
     std::string input;
 
     std::cout << "Enter Regular Expression: ";
-    std::cin >> regex;
+    std::getline(std::cin, regex);
 
     std::cout << "Enter String: ";
-    std::cin >> input;
+    std::getline(std::cin, input);
 
     RegexParser parser(regex);
     RegexNode* root = parser.parse();
+    
+    if (root == nullptr) {
+        if (regex.empty() && input.empty())
+            std::cout << "Result: ACCEPT" << std::endl;
+        else
+            std::cout << "Result: REJECT" << std::endl;
+
+        return 0;
+    }
 
     NFABuilder nfaBuilder;
     NFAFragment nfa = nfaBuilder.build(root);
