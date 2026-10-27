@@ -1,7 +1,5 @@
 # Diagrams
 
-All diagrams are written in [Mermaid](https://mermaid.js.org/), which GitHub renders automatically.
-
 ## 1. Architecture Diagram
 
 End-to-end pipeline, showing which component handles each stage (see `src/main.cpp`).
