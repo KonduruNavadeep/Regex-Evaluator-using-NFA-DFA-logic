@@ -47,6 +47,7 @@
 }
 
 \begin{document}
+% This material is Chapter 12; its sections are numbered 12.1, 12.2, ...
 \setcounter{chapter}{11}
 \setcounter{secnumdepth}{3}
 \chapter{Regex Evaluator Using NFA and DFA}
@@ -91,16 +92,17 @@ The program separates parsing, syntax-tree representation, NFA construction, NFA
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}
-  \node[umlclass,text width=3.2cm] (base) at (0,0) {\textbf{RegexNode}\\\rule{3.0cm}{0.3pt}\\+ evaluate(): string\\+ virtual destructor};
-  \node[umlclass,text width=3.2cm] (lit) at (-5.4,-3.1) {\textbf{LiteralNode}\\\rule{3.0cm}{0.3pt}\\- value: char\\+ evaluate(): string};
-  \node[umlclass,text width=3.2cm] (con) at (-1.8,-3.1) {\textbf{ConcatNode}\\\rule{3.0cm}{0.3pt}\\- left, right: RegexNode*\\+ evaluate(): string};
-  \node[umlclass,text width=3.2cm] (uni) at (1.8,-3.1) {\textbf{UnionNode}\\\rule{3.0cm}{0.3pt}\\- left, right: RegexNode*\\+ evaluate(): string};
-  \node[umlclass,text width=3.2cm] (star) at (5.4,-3.1) {\textbf{StarNode}\\\rule{3.0cm}{0.3pt}\\- child: RegexNode*\\+ evaluate(): string};
-  \draw[arrow] (lit.north) -- ++(0,0.65) -| (base.south west);
-  \draw[arrow] (con.north) -- ++(0,0.65) -| (base.south);
-  \draw[arrow] (uni.north) -- ++(0,0.65) -| (base.south);
-  \draw[arrow] (star.north) -- ++(0,0.65) -| (base.south east);
+\begin{tikzpicture}[x=1cm,y=1cm, every node/.style={font=\small}]
+  \node[umlclass,text width=3.5cm] (base) at (0,0) {\textbf{RegexNode}\\\rule{3.2cm}{0.3pt}\\+ evaluate(): string\\+ virtual destructor};
+  \node[umlclass,text width=3.0cm] (lit) at (-5.4,-3.0) {\textbf{LiteralNode}\\\rule{2.8cm}{0.3pt}\\- value: char\\+ evaluate(): string};
+  \node[umlclass,text width=3.0cm] (con) at (-1.8,-3.0) {\textbf{ConcatNode}\\\rule{2.8cm}{0.3pt}\\- left, right: RegexNode*\\+ evaluate(): string};
+  \node[umlclass,text width=3.0cm] (uni) at (1.8,-3.0) {\textbf{UnionNode}\\\rule{2.8cm}{0.3pt}\\- left, right: RegexNode*\\+ evaluate(): string};
+  \node[umlclass,text width=3.0cm] (star) at (5.4,-3.0) {\textbf{StarNode}\\\rule{2.8cm}{0.3pt}\\- child: RegexNode*\\+ evaluate(): string};
+  % Separate connector endpoints prevent the inheritance lines from overlapping.
+  \draw[arrow] (lit.north) -- ++(0,0.55) -| ([xshift=-1.25cm]base.south);
+  \draw[arrow] (con.north) -- ++(0,0.55) -| ([xshift=-0.4cm]base.south);
+  \draw[arrow] (uni.north) -- ++(0,0.55) -| ([xshift=0.4cm]base.south);
+  \draw[arrow] (star.north) -- ++(0,0.55) -| ([xshift=1.25cm]base.south);
 \end{tikzpicture}
 \caption{Simplified class diagram for the syntax-tree node hierarchy.}
 \label{fig:class-diagram}
@@ -217,20 +219,22 @@ The primary actor is the user, who supplies a regular expression and a string to
 \subsection{Sequence Diagram}
 \begin{figure}[H]
 \centering
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[x=1cm,y=1cm]
-  \node[draw,rounded corners,fill=blue!5,minimum width=1.8cm,minimum height=0.65cm] (user) at (0,0) {User};
-  \node[draw,rounded corners,fill=blue!5,minimum width=2.0cm,minimum height=0.65cm] (parser) at (3,0) {RegexParser};
-  \node[draw,rounded corners,fill=blue!5,minimum width=2.0cm,minimum height=0.65cm] (nfa) at (6,0) {NFABuilder};
-  \node[draw,rounded corners,fill=blue!5,minimum width=2.0cm,minimum height=0.65cm] (dfa) at (9,0) {DFABuilder};
-  \node[draw,rounded corners,fill=blue!5,minimum width=2.0cm,minimum height=0.65cm] (sim) at (12,0) {DFASimulator};
-  \foreach \x in {0,3,6,9,12} \draw[dashed] (\x,-0.35) -- (\x,-7.0);
-  \draw[arrow] (0,-1.0) -- node[above,sloped,font=\scriptsize] {regex and string} (3,-1.0);
-  \draw[arrow] (3,-2.0) -- node[above,sloped,font=\scriptsize] {syntax tree} (6,-2.0);
-  \draw[arrow] (6,-3.0) -- node[above,sloped,font=\scriptsize] {NFA fragment} (9,-3.0);
-  \draw[arrow] (9,-4.0) -- node[above,sloped,font=\scriptsize] {DFA start state} (12,-4.0);
-  \draw[arrow] (12,-5.0) -- node[above,sloped,font=\scriptsize] {match result} (0,-5.0);
-  \node[align=center,font=\small] at (6,-6.2) {The program prints the final result\\as ACCEPT or REJECT.};
-\end{tikzpicture}
+  \node[draw,rounded corners,fill=blue!5,minimum width=2.0cm,minimum height=0.7cm] (user) at (0,0) {User};
+  \node[draw,rounded corners,fill=blue!5,minimum width=2.2cm,minimum height=0.7cm] (parser) at (3.5,0) {RegexParser};
+  \node[draw,rounded corners,fill=blue!5,minimum width=2.2cm,minimum height=0.7cm] (nfa) at (7,0) {NFABuilder};
+  \node[draw,rounded corners,fill=blue!5,minimum width=2.2cm,minimum height=0.7cm] (dfa) at (10.5,0) {DFABuilder};
+  \node[draw,rounded corners,fill=blue!5,minimum width=2.4cm,minimum height=0.7cm] (sim) at (14,0) {DFASimulator};
+  \foreach \x in {0,3.5,7,10.5,14} \draw[dashed] (\x,-0.4) -- (\x,-6.1);
+  \draw[arrow] (0,-1.0) -- node[above,sloped,font=\scriptsize,fill=white,inner sep=2pt] {regex and input string} (3.5,-1.0);
+  \draw[arrow] (3.5,-2.0) -- node[above,sloped,font=\scriptsize,fill=white,inner sep=2pt] {syntax tree} (7,-2.0);
+  \draw[arrow] (7,-3.0) -- node[above,sloped,font=\scriptsize,fill=white,inner sep=2pt] {NFA fragment} (10.5,-3.0);
+  \draw[arrow] (10.5,-4.0) -- node[above,sloped,font=\scriptsize,fill=white,inner sep=2pt] {DFA start state} (14,-4.0);
+  \draw[arrow] (sim.south) -- ++(0,-0.6) -| node[pos=0.25,below,font=\scriptsize,fill=white,inner sep=2pt] {ACCEPT / REJECT result} (user.south);
+  \node[align=center,font=\small] at (7,-5.7) {The program displays the final result after the complete input is processed.};
+\end{tikzpicture}%
+}
 \caption{Simplified sequence of interactions between the user and core components.}
 \label{fig:sequence}
 \end{figure}
@@ -394,29 +398,30 @@ The program is organized around a pipeline of classes, each with one main respon
 The following diagram complements the syntax-tree inheritance diagram in Figure~\ref{fig:class-diagram}. It shows the collaboration between the parser, automata builders, state objects, and simulators. Solid inheritance arrows in the syntax-tree diagram indicate an \emph{is-a} relationship; the arrows below indicate use or construction relationships.
 \begin{figure}[H]
 \centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[node distance=1.0cm and 1.1cm, every node/.style={font=\small},
-  c/.style={draw,rounded corners,align=center,minimum width=2.4cm,minimum height=0.75cm,fill=blue!5},
+\resizebox{0.96\textwidth}{!}{%
+\begin{tikzpicture}[>=Stealth, every node/.style={font=\scriptsize},
+  c/.style={draw,rounded corners,align=center,text width=2.45cm,minimum height=0.9cm,fill=blue!5},
   rel/.style={-{Stealth[length=2mm]},thick}]
-  \node[c] (main) {\textbf{main()}\\Console I/O};
-  \node[c,right=of main] (parser) {\textbf{RegexParser}\\parse functions};
-  \node[c,right=of parser] (tree) {\textbf{RegexNode tree}\\Literal / Concat / Union / Star};
-  \node[c,below=1.25cm of tree] (nfa) {\textbf{NFABuilder}\\Thompson construction};
-  \node[c,left=of nfa] (nfastate) {\textbf{NFAState} +\\NFAFragment};
-  \node[c,right=of nfa] (ops) {\textbf{NFAOperations}\\closure / move};
-  \node[c,below=1.2cm of nfa] (dfab) {\textbf{DFABuilder}\\subset construction};
-  \node[c,left=of dfab] (dfastate) {\textbf{DFAState}\\subset + transitions};
-  \node[c,right=of dfab] (sim) {\textbf{DFASimulator}\\matches()};
-  \draw[rel] (main) -- (parser);
-  \draw[rel] (parser) -- node[above,font=\scriptsize]{creates} (tree);
-  \draw[rel] (tree) -- (nfa);
-  \draw[rel] (nfa) -- (nfastate);
-  \draw[rel] (nfa) -- (ops);
-  \draw[rel] (nfastate) -- (ops);
-  \draw[rel] (ops) -- (dfab);
-  \draw[rel] (dfab) -- (dfastate);
-  \draw[rel] (dfab) -- (sim);
-  \draw[rel] (main.south) |- (sim.west);
+  % Input and parsing pipeline
+  \node[c] (main) at (0,0) {\textbf{main()}\\Console I/O};
+  \node[c] (parser) at (3.5,0) {\textbf{RegexParser}\\parse functions};
+  \node[c] (tree) at (7,0) {\textbf{RegexNode tree}\\Literal / Concat / Union / Star};
+  % Automata construction layers
+  \node[c] (nfa) at (7,-2.0) {\textbf{NFABuilder}\\Thompson construction};
+  \node[c] (nfastate) at (3.5,-4.0) {\textbf{NFAState / NFAFragment}\\states and transitions};
+  \node[c] (ops) at (7,-4.0) {\textbf{NFAOperations}\\epsilon-closure / move};
+  \node[c] (dfab) at (7,-6.0) {\textbf{DFABuilder}\\subset construction};
+  \node[c] (dfastate) at (3.5,-8.0) {\textbf{DFAState}\\subset and transitions};
+  \node[c] (sim) at (7,-8.0) {\textbf{DFASimulator}\\matches()};
+  \draw[rel] (main.east) -- (parser.west);
+  \draw[rel] (parser.east) -- (tree.west);
+  \draw[rel] (tree.south) -- (nfa.north);
+  \draw[rel] (nfa.south west) -- (nfastate.north east);
+  \draw[rel] (nfa.south) -- (ops.north);
+  \draw[rel] (nfastate.east) -- (ops.west);
+  \draw[rel] (ops.south) -- (dfab.north);
+  \draw[rel] (dfab.south west) -- (dfastate.north east);
+  \draw[rel] (dfab.south) -- (sim.north);
 \end{tikzpicture}%
 }
 \caption{Collaboration diagram for the main implementation components.}
@@ -479,15 +484,18 @@ For \texttt{a*}, epsilon transitions permit zero repetitions by bypassing the ch
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[>=Stealth, every node/.style={font=\small}]
-  \node[circle,draw,minimum size=8mm] (s) at (0,0) {$s$};
-  \node[circle,draw,minimum size=8mm] (a0) at (2,0) {$a_0$};
-  \node[circle,draw,minimum size=8mm] (a1) at (4,0) {$a_1$};
-  \node[circle,draw,double,minimum size=8mm] (f) at (6,0) {$f$};
-  \draw[->,thick] (s) -- node[above]{\texttt{\textbackslash epsilon}} (a0);
-  \draw[->,thick] (a0) -- node[above]{\texttt{a}} (a1);
-  \draw[->,thick] (a1) to[bend left=35] node[above]{\texttt{\textbackslash epsilon} (repeat)} (a0);
-  \draw[->,thick] (a1) -- node[above]{\texttt{\textbackslash epsilon}} (f);
-  \draw[->,thick] (s) to[bend right=35] node[below]{\texttt{\textbackslash epsilon} (zero copies)} (f);
+  \node[circle,draw,minimum size=9mm] (s) at (0,0) {$s$};
+  \node[circle,draw,minimum size=9mm] (a0) at (3,0) {$a_0$};
+  \node[circle,draw,minimum size=9mm] (a1) at (6,0) {$a_1$};
+  \node[circle,draw,double,minimum size=9mm] (f) at (9,0) {$f$};
+  \draw[->,thick] (s.east) -- node[above]{$\epsilon$} (a0.west);
+  \draw[->,thick] (a0.east) -- node[above]{\texttt{a}} (a1.west);
+  \draw[->,thick] (a1.east) -- node[above]{\texttt{\textbackslash epsilon}} (f.west);
+  % Repeat path is routed above the states; zero-copy path below them.
+  \draw[->,thick] (a1.north) to[out=120,in=60,looseness=1.25]
+    node[above,yshift=2mm]{$\epsilon$ (repeat)} (a0.north);
+  \draw[->,thick] (s.south) to[out=-90,in=-90,looseness=1.15]
+    node[below,yshift=-3mm]{$\epsilon$ (zero copies)} (f.south);
 \end{tikzpicture}
 \caption{Conceptual Thompson NFA structure for \texttt{a*}.}
 \label{fig:nfa-star}
@@ -505,16 +513,18 @@ The NFA simulator first calculates the epsilon-closure of the start state. For e
 The subset construction creates a DFA state for each reachable set of NFA states. The set is the identity of that DFA state. When a newly calculated subset already exists, the builder reuses it instead of creating a duplicate. This is why the implementation keeps the represented NFA subset inside each \texttt{DFAState} object.
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[>=Stealth, every node/.style={font=\small}, box/.style={draw,rounded corners,align=center,minimum width=3.0cm,minimum height=0.85cm,fill=blue!5}]
+\begin{tikzpicture}[>=Stealth, every node/.style={font=\small},
+  box/.style={draw,rounded corners,align=center,text width=4.0cm,minimum height=0.95cm,fill=blue!5}]
   \node[box] (set) at (0,0) {Current DFA state\\$S=\{q_0,q_1,q_3\}$};
-  \node[box] (move) at (4,0) {Compute $\operatorname{move}(S,c)$};
-  \node[box] (closure) at (8,0) {Compute epsilon-closure};
-  \node[box] (next) at (8,-1.7) {Resulting NFA subset\\becomes a DFA state};
-  \draw[->,thick] (set) -- node[above]{input symbol $c$} (move);
-  \draw[->,thick] (move) -- (closure);
-  \draw[->,thick] (closure) -- (next);
-  \draw[->,thick] (next.west) -- ++(-1.3,0) |- (set.south);
-  \node[align=center] at (4,-2.6) {Repeat until no unprocessed reachable subsets remain.};
+  \node[box] (move) at (0,-1.8) {Compute $\operatorname{move}(S,c)$};
+  \node[box] (closure) at (0,-3.6) {Compute $\epsilon$-closure};
+  \node[box] (next) at (0,-5.4) {Resulting NFA subset\\becomes a DFA state};
+  \draw[->,thick] (set.south) -- node[right,xshift=2mm]{input symbol $c$} (move.north);
+  \draw[->,thick] (move.south) -- (closure.north);
+  \draw[->,thick] (closure.south) -- (next.north);
+  % Feedback route stays outside the boxes and returns to the worklist.
+  \draw[->,thick] (next.west) -- ++(-2.0,0) |- node[pos=0.25,left,align=center,text width=2.4cm]{Process next\\unvisited subset} (set.west);
+  \node[align=center] at (0,-6.5) {Repeat until no unprocessed reachable subsets remain.};
 \end{tikzpicture}
 \caption{The central step in subset construction. The state names are illustrative.}
 \label{fig:subset-construction}
